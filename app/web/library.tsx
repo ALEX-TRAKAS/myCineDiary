@@ -2,9 +2,9 @@ import { Text, YStack } from "tamagui";
 
 export default function Library() {
   return (
-    <YStack flex={1} justifyContent="center" alignItems="center" background="$background">
+    <YStack f={1} jc="center" ai="center">
       <Text fontSize="$8" fontWeight="700" color="$color">
-        Library Page (Tabs)
+        TODO : Your watchlist
       </Text>
     </YStack>
   );

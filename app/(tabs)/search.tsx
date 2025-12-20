@@ -2,8 +2,10 @@ import { Text, YStack } from "tamagui";
 
 export default function Search() {
   return (
-    <YStack f={1} jc="center" ai="center">
-      <Text>TODO : Search movies & series</Text>
+   <YStack flex={1} justifyContent="center" alignItems="center" background="$background">
+    <Text fontSize="$8" fontWeight="700" color="$color">
+        TODO : Search movies & series
+    </Text>
     </YStack>
   );
 }
