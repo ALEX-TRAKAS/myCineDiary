@@ -1,12 +1,8 @@
 import { Home, Library, Search } from "@tamagui/lucide-icons";
 import { Tabs } from "expo-router";
-import { useColorScheme } from "react-native";
 
 export default function TabsLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-  
         <Tabs screenOptions={{ headerShown: false }}>
           <Tabs.Screen
             name="home"
