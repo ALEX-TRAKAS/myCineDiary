@@ -1,32 +1,32 @@
 
 import { TMDBMedia } from '@/types/tmdb';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Text, YStack } from 'tamagui';
-import { MovieShowsList } from '../../components/movieShowsList';
+import { fetchTrending } from '../../src/api/tmbdApi';
+import { MovieShowsList } from '../../src/components/movieShowsList';
 
 export default function Home() {
   const [data, setData] = useState<TMDBMedia[]>([]);
-  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
-
-  const fetchData = async () => {
+  const [page, setPage] = useState(1);
+  
+  const fetchData = useCallback(async () => {
     if (loading) return;
     setLoading(true);
-
-    const res = await fetch(
-      `https://api.themoviedb.org/3/trending/all/day?api_key=${process.env.TMDB_API_KEY}&page=${page}`
-    );
-    const json = await res.json();
-
-    setData(prev => [...prev, ...json.results]);
-    setPage(prev => prev + 1);
-    setLoading(false);
-  };
-
+    try {
+      const res = await fetchTrending("movie", page);
+  
+      setData(prev => [...prev, ...res.results]);
+      setPage(prev => prev + 1);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, loading]);
+  
   useEffect(() => {
     fetchData();
-  }, []);
-
+  }, [fetchData]);
+  
   return (
   <YStack f={1} bg="$background">
       <YStack

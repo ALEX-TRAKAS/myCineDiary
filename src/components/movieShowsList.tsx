@@ -18,7 +18,7 @@ export function MovieShowsList({ data, loading, loadMore }: Props) {
     <FlatList
       data={data}
       key={isWeb ? 'grid' : 'vertical'}
-      keyExtractor={(item) => item.id.toString()}
+     keyExtractor={(item) => item.id.toString()}
       horizontal={!isWeb}
       numColumns={isWeb ? 5 : 1}
       showsHorizontalScrollIndicator={false}

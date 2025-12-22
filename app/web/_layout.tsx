@@ -1,4 +1,4 @@
-import { WebHeader } from '@/components/webHeader';
+import { WebHeader } from '@/src/components/webHeader';
 import { Slot } from 'expo-router';
 import { useColorScheme } from 'react-native';
 import { Text, Theme, XStack, YStack } from 'tamagui';

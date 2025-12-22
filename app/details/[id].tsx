@@ -1,4 +1,4 @@
-import { WebHeader } from '@/components/webHeader';
+import { WebHeader } from '@/src/components/webHeader';
 import { Image } from 'expo-image';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -41,7 +41,6 @@ export default function Details() {
     );
     }
   return (
-   
     <ScrollView>
       <YStack f={1} gap="$4" p="$4" bg="$background">
         <Image

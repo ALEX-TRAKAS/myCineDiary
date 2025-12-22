@@ -1,30 +1,47 @@
 import { TMDBMedia } from '@/types/tmdb';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Text, YStack } from 'tamagui';
-import { MovieShowsList } from '../../components/movieShowsList';
+import { fetchTrending } from '../../src/api/tmbdApi';
+import { MovieShowsList } from '../../src/components/movieShowsList';
 
 export default function Home() {
-  const [data, setData] = useState<TMDBMedia[]>([]);
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
+const [data, setData] = useState<TMDBMedia[]>([]);
+const [loading, setLoading] = useState(false);
+const [page, setPage] = useState(1);
+const [error, setError] = useState<string | null>(null);
+const [hasMore, setHasMore] = useState(true);
 
-  const fetchData = async () => {
-    if (loading) return;
-    setLoading(true);
 
-    const res = await fetch(
-      `https://api.themoviedb.org/3/trending/all/day?api_key=${process.env.TMDB_API_KEY}&page=${page}`
-    );
-    const json = await res.json();
+const fetchData = useCallback(async () => {
+  if (loading || !hasMore) return;
 
-    setData(prev => [...prev, ...json.results]);
+  setLoading(true);
+  setError(null);
+
+  try {
+    const res = await fetchTrending("movie", page);
+
+    if (!Array.isArray(res?.results)) {
+      throw new Error("Invalid response");
+    }
+
+    setData(prev => [...prev, ...res.results]);
+    setHasMore(res.results.length > 0);
     setPage(prev => prev + 1);
+  } catch (err) {
+    console.error(err);
+    setError("Failed to load data. Pull to retry.");
+  } finally {
     setLoading(false);
-  };
+  }
+}, [page, loading, hasMore]);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+
+
+useEffect(() => {
+  fetchData();
+}, []);
+
 
   return (
     <YStack f={1} bg="$background">
@@ -51,7 +68,7 @@ export default function Home() {
         <MovieShowsList
           data={data}
           loading={loading}
-          loadMore={fetchData}
+          loadMore={fetchData }
         />
       </YStack>
     </YStack>
