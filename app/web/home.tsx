@@ -1,10 +1,10 @@
+import { TMDBMedia } from '@/types/tmdb';
 import { useEffect, useState } from 'react';
 import { Text, YStack } from 'tamagui';
 import { MovieShowsList } from '../../components/movieShowsList';
-import { MovieShowItem } from '../../types/movieShowItem';
 
 export default function Home() {
-  const [data, setData] = useState<MovieShowItem[]>([]);
+  const [data, setData] = useState<TMDBMedia[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
 

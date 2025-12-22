@@ -11,9 +11,18 @@ export interface TMDBMovie {
   genres?: { id: number; name: string }[];
   [key: string]: any; 
 }
-export interface TMDBResponse {
+type MediaType = 'movie' | 'tv';
+
+export interface TMDBMedia {
+  id: number;
+  media_type: MediaType;
+  title?: string;
+  name?: string;
+  poster_path: string;
+}
+export interface TMDBMediaResponse {
   page: number;
-  results: TMDBMovie[];
+  results: TMDBMedia[];
   total_pages: number;
   total_results: number;
 }

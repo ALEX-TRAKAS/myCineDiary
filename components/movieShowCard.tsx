@@ -1,10 +1,10 @@
+import { TMDBMedia } from '@/types/tmdb';
 import { Image } from 'expo-image';
 import { Pressable } from 'react-native';
 import { Text, YStack } from 'tamagui';
-import { MovieShowItem } from '../types/movieShowItem';
 
 type Props = {
-  item: MovieShowItem;
+  item: TMDBMedia;
   onPress?: () => void;
 };
 

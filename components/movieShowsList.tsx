@@ -1,16 +1,17 @@
+import { TMDBMedia } from '@/types/tmdb';
+import { useRouter } from 'expo-router';
 import { FlatList, Platform } from 'react-native';
-import { MovieShowItem } from '../types/movieShowItem';
 import { MovieShowCard } from './movieShowCard';
 import { SkeletonCard } from './skeletonCard';
 
 type Props = {
-  data: MovieShowItem[];
+  data: TMDBMedia[];
   loading: boolean;
   loadMore: () => void;
 };
 
 export function MovieShowsList({ data, loading, loadMore }: Props) {
-//   const router = useRouter();
+  const router = useRouter();
   const isWeb = Platform.OS === 'web';
 
   return (
@@ -29,12 +30,18 @@ export function MovieShowsList({ data, loading, loadMore }: Props) {
       ListFooterComponent={
         loading ? <SkeletonCard /> : null
       }
-      renderItem={({ item }) => (
+     renderItem={({ item }: { item: TMDBMedia }) => (
         <MovieShowCard
           item={item}
-        //   onPress={() =>
-        //     // router.push(`/details/${item.id}?type=${item.media_type}`)
-        //   }
+          onPress={() => {
+            router.push({
+              pathname: "/details/[id]",
+              params: {
+                id: String(item.id),
+                type: item.media_type,
+              },
+            });
+          }}
         />
       )}
     />
