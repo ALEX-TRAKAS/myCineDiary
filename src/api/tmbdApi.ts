@@ -14,8 +14,35 @@ export async function fetchDetails(id: string, type: MediaType) {
   return res.json();
 }
 
-export async function searchMedia(query: string, type: MediaType = "movie") {
-  const res = await fetch(`${BASE_URL}/search/${type}?api_key=${process.env.TMDB_API_KEY}&query=${encodeURIComponent(query)}`);
-  if (!res.ok) throw new Error("Failed to search");
-  return res.json();
+export async function searchMediaAll(query: string, page = 1) {
+  const [moviesRes, tvRes] = await Promise.all([
+    fetch(
+      `${BASE_URL}/search/movie?api_key=${process.env.TMDB_API_KEY}&query=${encodeURIComponent(
+        query
+      )}&page=${page}`
+    ),
+    fetch(
+      `${BASE_URL}/search/tv?api_key=${process.env.TMDB_API_KEY}&query=${encodeURIComponent(
+        query
+      )}&page=${page}`
+    ),
+  ]);
+
+  if (!moviesRes.ok || !tvRes.ok) {
+    throw new Error("Failed to search movies or TV shows");
+  }
+
+  const [movies, tv] = await Promise.all([moviesRes.json(), tvRes.json()]);
+
+  const combined = [...movies.results, ...tv.results];
+
+  const total_pages = Math.max(movies.total_pages, tv.total_pages);
+
+  return {
+    results: combined,
+    total_results: combined.length,
+    total_pages,
+  };
 }
+
+
