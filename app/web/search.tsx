@@ -9,7 +9,7 @@ import { MovieShowsList } from '../../src/components/movieShowsList';
 
 
 export default function Search() {
-   const [query, setQuery] = useState("");
+  const [query, setQuery] = useState("");
   const [data, setData] = useState<TMDBMedia[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);

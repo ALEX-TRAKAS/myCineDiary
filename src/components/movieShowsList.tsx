@@ -18,13 +18,13 @@ export function MovieShowsList({ data, loading, loadMore }: Props) {
     <FlatList
       data={data}
       key={isWeb ? 'grid' : 'vertical'}
-     keyExtractor={(item) => item.id.toString()}
-      horizontal={!isWeb}
-      numColumns={isWeb ? 5 : 1}
+      keyExtractor={(item) => item.id.toString()}
+    
+      numColumns={isWeb ? 5 : 2}
       showsHorizontalScrollIndicator={false}
       showsVerticalScrollIndicator={true}
       contentContainerStyle={{ gap: 16, padding: 16 }}
-      columnWrapperStyle={isWeb ? { gap: 16 } : undefined}
+      columnWrapperStyle={isWeb ? { gap: 16 } : { gap: 20 }}
       onEndReached={loadMore}
       onEndReachedThreshold={0.6}
       ListFooterComponent={
