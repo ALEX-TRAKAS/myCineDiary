@@ -28,6 +28,12 @@ export function WebHeader() {
             Library
           </Button>
         </Link>
+
+         <Link href="/web/profile">
+          <Button size="$3" themeInverse={pathname === "/web/profile"}>
+            Profile
+          </Button>
+        </Link>
       </XStack>
     </XStack>
   );

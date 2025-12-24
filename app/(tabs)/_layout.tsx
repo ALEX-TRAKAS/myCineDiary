@@ -1,28 +1,42 @@
-import { Home, Library, Search } from "@tamagui/lucide-icons";
+import { CircleUser, Home, Library, Search } from "@tamagui/lucide-icons";
 import { Tabs } from "expo-router";
 
 export default function TabsLayout() {
   return (
-        <Tabs screenOptions={{ headerShown: false }}>
+        <Tabs  screenOptions={{
+          headerShown: false,
+            tabBarActiveTintColor: '$primary',
+            tabBarInactiveTintColor: '#888',
+            tabBarStyle: {
+                 backgroundColor: '#000',
+        },
+      }}>
           <Tabs.Screen
             name="home"
             options={{
               title: "Home",
-              tabBarIcon: ({ color }) => <Home color={color} />,
+              tabBarIcon: () => <Home color={"$primary"} />,
             }}
           />
           <Tabs.Screen
             name="search"
             options={{
               title: "Search",
-              tabBarIcon: ({ color }) => <Search color={color} />,
+              tabBarIcon: () => <Search color={"$primary"} />,
             }}
           />
           <Tabs.Screen
             name="library"
             options={{
               title: "Library",
-              tabBarIcon: ({ color }) => <Library color={color} />,
+              tabBarIcon: () => <Library color={"$primary"} />,
+            }}
+          />
+          <Tabs.Screen
+            name="profile"
+            options={{
+              title: "Profile",
+              tabBarIcon: () => <CircleUser color={"$primary"} />,
             }}
           />
         </Tabs>
