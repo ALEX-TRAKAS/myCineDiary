@@ -19,7 +19,7 @@ export default function Details() {
 
   useEffect(() => {
     fetch(
-      `https://api.themoviedb.org/3/${type}/${id}?api_key=${process.env.TMDB_API_KEY}&language=en-US`
+      `https://api.themoviedb.org/3/${type}/${id}?api_key=${process.env.EXPO_PUBLIC_TMDB_API_KEY}&language=en-US`
     )
       .then(res => res.json())
       .then(setItem);
