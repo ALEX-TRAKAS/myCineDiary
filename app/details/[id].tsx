@@ -30,16 +30,23 @@ export default function Details() {
     return (
       <ScrollView contentContainerStyle={{ flexGrow: 1 , backgroundColor: "$background" }}>
         <WebHeader />
-        <YStack f={1} gap="$4" p="$4" bg="$background">
-        <Image
-          source={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-          style={{ width: '100%', height: 400, borderRadius: 16 }}
-        />
-        <Text fontSize="$8" fontWeight="700">
-          {item.title ?? item.name}
-        </Text>
-        <Text>{item.overview}</Text>
-      </YStack>
+        <XStack px="$6" py="$20" pt={insets.top} bg="$background" f={1} minHeight="100vh">
+        <XStack ai="center">
+            <YStack f={1} gap="$4" p="$4" bg="$background">
+            <Image
+              source={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+              style={{ width: '30%', height: 400, borderRadius: 16 }}
+            />
+            <Text fontSize="$8" fontWeight="700">
+              {item.title ?? item.name}
+            </Text>
+            <Text>{item.overview}</Text>
+          </YStack>
+           <YStack f={1} gap="$4" p="$4" bg="$background">
+            
+          </YStack>
+        </XStack>
+      </XStack>
     </ScrollView>
     );
     }
