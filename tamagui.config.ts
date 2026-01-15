@@ -55,6 +55,11 @@ export const tamaguiConfig = createTamagui({
       },
     },
   },
+    media: {
+    sm: { maxWidth: 640 },
+    md: { maxWidth: 900 },
+    lg: { maxWidth: 1200 },
+  },
 });
 
 export type AppTamaguiConfig = typeof tamaguiConfig;
