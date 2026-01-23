@@ -1,9 +1,5 @@
-import { Redirect } from 'expo-router';
-import { Platform } from 'react-native';
+import { Redirect } from "expo-router";
 
 export default function Index() {
-  if (Platform.OS === 'web') {
-    return <Redirect href="/web/home" />;
-  }
   return <Redirect href="/home" />;
 }

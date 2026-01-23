@@ -1,15 +1,19 @@
 import { Stack } from "expo-router";
 import { useColorScheme } from "react-native";
 import { TamaguiProvider, Theme } from "tamagui";
-import { tamaguiConfig } from "../tamagui.config";
+
+import { AuthProvider } from "@/src/auth/AuthContext";
+import config from "../tamagui.config";
 
 export default function RootLayout() {
-   const colorScheme = useColorScheme(); 
+  const scheme = useColorScheme();
 
   return (
-    <TamaguiProvider config={tamaguiConfig}>
-      <Theme name={colorScheme === "dark" ? "dark" : "light"}>
-        <Stack screenOptions={{ headerShown: false }} />
+    <TamaguiProvider config={config}>
+      <Theme name={scheme === "dark" ? "dark" : "light"}>
+        <AuthProvider>
+          <Stack screenOptions={{ headerShown: false }} />
+        </AuthProvider>
       </Theme>
     </TamaguiProvider>
   );

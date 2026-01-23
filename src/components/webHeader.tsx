@@ -9,7 +9,8 @@ export function WebHeader() {
       background="$primary"
       padding="$3"
       alignItems="center"
-      justifyContent="space-between" >
+      justifyContent="space-between"
+    >
       <XStack gap="$3">
         <Link href="/web/home">
           <Button size="$3" themeInverse={pathname === "/web/home"}>
@@ -29,7 +30,7 @@ export function WebHeader() {
           </Button>
         </Link>
 
-         <Link href="/web/profile">
+        <Link href="/web/profile">
           <Button size="$3" themeInverse={pathname === "/web/profile"}>
             Profile
           </Button>

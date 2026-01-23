@@ -1,13 +1,13 @@
-import { Href, Link } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { Button, Input, Paragraph, Separator, XStack, YStack } from "tamagui";
 
-import { loginUser, registerUser } from "../../src/api/auth";
+import { loginUser, registerUser } from "@/src/api/auth";
 
 interface Props {
   type: "sign-up" | "sign-in";
   isAuth: boolean;
   onSuccess?: () => void;
+  onSwitchMode?: () => void;
 }
 
 export interface SignData {
@@ -16,10 +16,11 @@ export interface SignData {
   username?: string;
 }
 
-export const SignUpSignInComponent: React.FC<Props> = ({
+export const SignUpSignInForm: React.FC<Props> = ({
   type,
   isAuth,
   onSuccess,
+  onSwitchMode,
 }) => {
   const {
     control,
@@ -55,7 +56,6 @@ export const SignUpSignInComponent: React.FC<Props> = ({
     }
   };
 
-  const authHref: Href = (type === "sign-up" ? "/signin" : "/signup") as Href;
   return (
     <YStack
       backgroundColor="$background"
@@ -79,10 +79,12 @@ export const SignUpSignInComponent: React.FC<Props> = ({
         control={control}
         name="email"
         rules={{ required: "Email is required" }}
-        render={({ field }) => (
+        render={({ field: { value, onChange, onBlur } }) => (
           <>
             <Input
-              {...field}
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
               placeholder="Email"
               keyboardType="email-address"
               autoCapitalize="none"
@@ -96,7 +98,7 @@ export const SignUpSignInComponent: React.FC<Props> = ({
         )}
       />
 
-      {/* Username (sign-up only) */}
+      {/* Username */}
       {type === "sign-up" && (
         <Controller
           control={control}
@@ -105,9 +107,14 @@ export const SignUpSignInComponent: React.FC<Props> = ({
             required: "Username is required",
             minLength: { value: 3, message: "Min 3 characters" },
           }}
-          render={({ field }) => (
+          render={({ field: { value, onChange, onBlur } }) => (
             <>
-              <Input {...field} placeholder="Username" />
+              <Input
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                placeholder="Username"
+              />
               {errors.username && (
                 <Paragraph size="$2" color="$red10">
                   {errors.username.message}
@@ -126,9 +133,15 @@ export const SignUpSignInComponent: React.FC<Props> = ({
           required: "Password is required",
           minLength: { value: 8, message: "Min 8 characters" },
         }}
-        render={({ field }) => (
+        render={({ field: { value, onChange, onBlur } }) => (
           <>
-            <Input {...field} placeholder="Password" secureTextEntry />
+            <Input
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              placeholder="Password"
+              secureTextEntry
+            />
             {errors.password && (
               <Paragraph size="$2" color="$red10">
                 {errors.password.message}
@@ -147,16 +160,15 @@ export const SignUpSignInComponent: React.FC<Props> = ({
           {type === "sign-up" ? "Already have an account?" : "No account yet?"}
         </Paragraph>
 
-        <Link href={authHref}>
-          <Paragraph
-            size="$2"
-            fontWeight="700"
-            color="$blue9Light"
-            cursor="pointer"
-          >
-            {type === "sign-up" ? "Sign in" : "Sign up"}
-          </Paragraph>
-        </Link>
+        <Paragraph
+          size="$2"
+          fontWeight="700"
+          color="$blue9Light"
+          cursor="pointer"
+          onPress={onSwitchMode}
+        >
+          {type === "sign-up" ? "Sign in" : "Sign up"}
+        </Paragraph>
       </XStack>
     </YStack>
   );
