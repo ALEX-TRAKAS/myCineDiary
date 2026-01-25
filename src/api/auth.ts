@@ -1,5 +1,6 @@
 import { authFetch } from "@/src/lib/authFetch";
 import { clearTokens, saveTokens } from "@/src/lib/tokenStorage";
+import { getDeviceId } from "../auth/utils/deviceID";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:8080/api";
 
@@ -35,9 +36,10 @@ export async function loginUser(data: {
   email: string;
   password: string;
 }): Promise<AuthResponse> {
+  const deviceId = await getDeviceId();
   const res = await fetch(`${API_URL}/login`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "X-Device-ID": deviceId },
     body: JSON.stringify(data),
   });
 
