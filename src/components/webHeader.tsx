@@ -5,12 +5,7 @@ export function WebHeader() {
   const pathname = usePathname();
 
   return (
-    <XStack
-      background="$primary"
-      padding="$3"
-      alignItems="center"
-      justifyContent="space-between"
-    >
+    <XStack bg="$primary" px="$4" py="$3" ai="center" jc="space-between">
       <XStack gap="$3">
         <Link href="/web/home">
           <Button size="$3" themeInverse={pathname === "/web/home"}>
@@ -33,6 +28,20 @@ export function WebHeader() {
         <Link href="/web/profile">
           <Button size="$3" themeInverse={pathname === "/web/profile"}>
             Profile
+          </Button>
+        </Link>
+      </XStack>
+      <XStack gap="$9"></XStack>
+      <XStack gap="$3">
+        <Link href="/signin">
+          <Button size="$3" themeInverse={pathname === "/signin"}>
+            Sign in
+          </Button>
+        </Link>
+
+        <Link href="/signup">
+          <Button size="$3" themeInverse={pathname === "/signup"}>
+            Sign up
           </Button>
         </Link>
       </XStack>
