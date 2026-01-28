@@ -1,10 +1,17 @@
-import { createContext, useContext, useEffect, useState } from "react";
 import { getCurrentUser } from "@/src/api/user";
 import { clearTokens } from "@/src/lib/tokenStorage";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 type AuthContextType = {
   user: any | null;
   loading: boolean;
+  isAuthenticated: boolean;
   refreshUser: () => Promise<void>;
   logout: () => Promise<void>;
 };
@@ -15,16 +22,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
     try {
       const me = await getCurrentUser();
       setUser(me);
-    } catch {
+    } catch (err) {
+      await clearTokens();
       setUser(null);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const logout = async () => {
     await clearTokens();
@@ -33,11 +41,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     refreshUser();
-  }, []);
+  }, [refreshUser]);
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, refreshUser, logout }}
+      value={{
+        user,
+        loading,
+        isAuthenticated: !!user,
+        refreshUser,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>
