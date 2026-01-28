@@ -13,6 +13,7 @@ interface Props {
 export interface SignData {
   email: string;
   password: string;
+  confirmPassword?: string;
   username?: string;
 }
 
@@ -26,10 +27,12 @@ export const SignUpSignInForm: React.FC<Props> = ({
     control,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<SignData>({
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
       username: "",
     },
     mode: "onTouched",
@@ -97,8 +100,6 @@ export const SignUpSignInForm: React.FC<Props> = ({
           </>
         )}
       />
-
-      {/* Username */}
       {type === "sign-up" && (
         <Controller
           control={control}
@@ -125,13 +126,12 @@ export const SignUpSignInForm: React.FC<Props> = ({
         />
       )}
 
-      {/* Password */}
       <Controller
         control={control}
         name="password"
         rules={{
           required: "Password is required",
-          minLength: { value: 8, message: "Min 8 characters" },
+          ...(type === "sign-up" && { minLength: { value: 8, message: "Min 8 characters" } }),
         }}
         render={({ field: { value, onChange, onBlur } }) => (
           <>
@@ -150,6 +150,34 @@ export const SignUpSignInForm: React.FC<Props> = ({
           </>
         )}
       />
+
+      {type === "sign-up" && (
+        <Controller
+          control={control}
+          name="confirmPassword"
+          rules={{
+            required: "Please confirm your password",
+            validate: (value) =>
+              value === watch("password") || "Passwords do not match",
+          }}
+          render={({ field: { value, onChange, onBlur } }) => (
+            <>
+              <Input
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                placeholder="Confirm password"
+                secureTextEntry
+              />
+              {errors.confirmPassword && (
+                <Paragraph size="$2" color="$red10">
+                  {errors.confirmPassword.message}
+                </Paragraph>
+              )}
+            </>
+          )}
+        />
+      )}
 
       <Button disabled={isAuth} onPress={handleSubmit(onSubmit)}>
         {type === "sign-up" ? "Sign up" : "Sign in"}

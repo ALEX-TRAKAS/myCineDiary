@@ -14,9 +14,9 @@ export default function WebLayout() {
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <YStack f={1} px="$4">
             <Slot />
-            <WebFooter />
           </YStack>
         </ScrollView>
+        <WebFooter />
       </YStack>
     </Theme>
   );

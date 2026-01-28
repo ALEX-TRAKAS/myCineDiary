@@ -13,12 +13,6 @@ export function WebHeader() {
           </Button>
         </Link>
 
-        <Link href="/web/search">
-          <Button size="$3" themeInverse={pathname === "/web/search"}>
-            Search
-          </Button>
-        </Link>
-
         <Link href="/web/library">
           <Button size="$3" themeInverse={pathname === "/web/library"}>
             Library
@@ -31,7 +25,7 @@ export function WebHeader() {
           </Button>
         </Link>
       </XStack>
-      <XStack gap="$9"></XStack>
+
       <XStack gap="$3">
         <Link href="/signin">
           <Button size="$3" themeInverse={pathname === "/signin"}>
