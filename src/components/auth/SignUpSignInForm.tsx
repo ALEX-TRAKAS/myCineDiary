@@ -66,7 +66,7 @@ export const SignUpSignInForm: React.FC<Props> = ({
       px="$7"
       py="$6"
       w={350}
-      space="$4"
+      gap="$4"
       shadowColor="#00000020"
       shadowRadius={26}
       shadowOffset={{ width: 0, height: 4 }}
@@ -131,7 +131,9 @@ export const SignUpSignInForm: React.FC<Props> = ({
         name="password"
         rules={{
           required: "Password is required",
-          ...(type === "sign-up" && { minLength: { value: 8, message: "Min 8 characters" } }),
+          ...(type === "sign-up" && {
+            minLength: { value: 8, message: "Min 8 characters" },
+          }),
         }}
         render={({ field: { value, onChange, onBlur } }) => (
           <>
