@@ -61,7 +61,7 @@ export const SignUpSignInForm: React.FC<Props> = ({
 
   return (
     <YStack
-      backgroundColor="$background"
+      backgroundColor="#ffffff"
       borderRadius="$10"
       px="$7"
       py="$6"
@@ -71,7 +71,7 @@ export const SignUpSignInForm: React.FC<Props> = ({
       shadowRadius={26}
       shadowOffset={{ width: 0, height: 4 }}
     >
-      <Paragraph size="$5" fontWeight="700" opacity={0.8}>
+      <Paragraph fontWeight="700" color="#000" size="$5" opacity={0.8}>
         {type === "sign-up" ? "Create account" : "Login"}
       </Paragraph>
 
@@ -85,6 +85,10 @@ export const SignUpSignInForm: React.FC<Props> = ({
         render={({ field: { value, onChange, onBlur } }) => (
           <>
             <Input
+              backgroundColor="#fff"
+              color="#000"
+              borderColor="#000"
+              placeholderTextColor="#666"
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
@@ -111,6 +115,10 @@ export const SignUpSignInForm: React.FC<Props> = ({
           render={({ field: { value, onChange, onBlur } }) => (
             <>
               <Input
+                backgroundColor="#fff"
+                color="#000"
+                borderColor="#000"
+                placeholderTextColor="#666"
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -138,6 +146,10 @@ export const SignUpSignInForm: React.FC<Props> = ({
         render={({ field: { value, onChange, onBlur } }) => (
           <>
             <Input
+              backgroundColor="#fff"
+              color="#000"
+              borderColor="#000"
+              placeholderTextColor="#666"
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
@@ -165,6 +177,10 @@ export const SignUpSignInForm: React.FC<Props> = ({
           render={({ field: { value, onChange, onBlur } }) => (
             <>
               <Input
+                backgroundColor="#fff"
+                color="#000"
+                borderColor="#000"
+                placeholderTextColor="#666"
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -181,19 +197,25 @@ export const SignUpSignInForm: React.FC<Props> = ({
         />
       )}
 
-      <Button disabled={isAuth} onPress={handleSubmit(onSubmit)}>
+      <Button
+        disabled={isAuth}
+        onPress={handleSubmit(onSubmit)}
+        backgroundColor="$primary"
+        borderColor="#000"
+        color="#ffffff"
+      >
         {type === "sign-up" ? "Sign up" : "Sign in"}
       </Button>
 
       <XStack>
-        <Paragraph size="$2" opacity={0.6} mr="$2">
+        <Paragraph size="$2" color="#000" mr="$2">
           {type === "sign-up" ? "Already have an account?" : "No account yet?"}
         </Paragraph>
 
         <Paragraph
           size="$2"
           fontWeight="700"
-          color="$blue9Light"
+          color="#000"
           cursor="pointer"
           onPress={onSwitchMode}
         >
