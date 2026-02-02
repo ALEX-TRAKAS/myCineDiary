@@ -1,4 +1,5 @@
 import { Link, usePathname } from "expo-router";
+import { Image } from "react-native";
 import { Button, XStack } from "tamagui";
 import { useAuth } from "../auth/AuthContext";
 
@@ -8,12 +9,26 @@ export function WebHeader() {
 
   return (
     <XStack bg="$primary" px="$4" py="$3" ai="center" jc="space-between">
+      <Link href="/web/home">
+        <Image
+          source={require("../../assets/images/logo.png")}
+          style={{
+            width: 148,
+            height: 148,
+            position: "absolute",
+            left: 16,
+            top: -70,
+          }}
+          resizeMode="contain"
+        />
+      </Link>
+
       <XStack gap="$3">
         {user && (
           <>
             <Link href="/web/home">
               <Button size="$3" themeInverse={pathname === "/web/home"}>
-                Home
+                Homes
               </Button>
             </Link>
 
