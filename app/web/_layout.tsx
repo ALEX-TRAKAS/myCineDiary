@@ -17,8 +17,8 @@ export default function WebLayout() {
             <YStack f={1} px="$4">
               <Slot />
             </YStack>
+            <WebFooter />
           </ScrollView>
-          <WebFooter />
         </YStack>
       </Theme>
     </AuthProvider>

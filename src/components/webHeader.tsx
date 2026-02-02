@@ -9,23 +9,27 @@ export function WebHeader() {
   return (
     <XStack bg="$primary" px="$4" py="$3" ai="center" jc="space-between">
       <XStack gap="$3">
-        <Link href="/web/home">
-          <Button size="$3" themeInverse={pathname === "/web/home"}>
-            Home
-          </Button>
-        </Link>
+        {user && (
+          <>
+            <Link href="/web/home">
+              <Button size="$3" themeInverse={pathname === "/web/home"}>
+                Home
+              </Button>
+            </Link>
 
-        <Link href="/web/library">
-          <Button size="$3" themeInverse={pathname === "/web/library"}>
-            Library
-          </Button>
-        </Link>
+            <Link href="/web/library">
+              <Button size="$3" themeInverse={pathname === "/web/library"}>
+                Library
+              </Button>
+            </Link>
 
-        <Link href="/web/profile">
-          <Button size="$3" themeInverse={pathname === "/web/profile"}>
-            Profile
-          </Button>
-        </Link>
+            <Link href="/web/profile">
+              <Button size="$3" themeInverse={pathname === "/web/profile"}>
+                Profile
+              </Button>
+            </Link>
+          </>
+        )}
       </XStack>
 
       <XStack gap="$3">
