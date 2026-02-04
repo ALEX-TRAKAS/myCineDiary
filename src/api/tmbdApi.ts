@@ -3,13 +3,17 @@ const BASE_URL = "https://api.themoviedb.org/3";
 export type MediaType = "movie" | "tv";
 
 export async function fetchTrending(type: MediaType = "movie", page = 1) {
-  const res = await fetch(`${BASE_URL}/trending/${type}/week?api_key=${process.env.EXPO_PUBLIC_TMDB_API_KEY}&page=${page}`);
+  const res = await fetch(
+    `${BASE_URL}/trending/${type}/week?api_key=${process.env.EXPO_PUBLIC_TMDB_API_KEY}&page=${page}`,
+  );
   if (!res.ok) throw new Error("Failed to fetch trending");
   return res.json();
 }
 
 export async function fetchDetails(id: string, type: MediaType) {
-  const res = await fetch(`${BASE_URL}/${type}/${id}?api_key=${process.env.EXPO_PUBLIC_TMDB_API_KEY}&language=en-US`);
+  const res = await fetch(
+    `${BASE_URL}/${type}/${id}?api_key=${process.env.EXPO_PUBLIC_TMDB_API_KEY}&language=en-US`,
+  );
   if (!res.ok) throw new Error("Failed to fetch details");
   return res.json();
 }
@@ -18,13 +22,13 @@ export async function searchMediaAll(query: string, page = 1) {
   const [moviesRes, tvRes] = await Promise.all([
     fetch(
       `${BASE_URL}/search/movie?api_key=${process.env.EXPO_PUBLIC_TMDB_API_KEY}&query=${encodeURIComponent(
-        query
-      )}&page=${page}`
+        query,
+      )}&page=${page}`,
     ),
     fetch(
       `${BASE_URL}/search/tv?api_key=${process.env.EXPO_PUBLIC_TMDB_API_KEY}&query=${encodeURIComponent(
-        query
-      )}&page=${page}`
+        query,
+      )}&page=${page}`,
     ),
   ]);
 
@@ -45,4 +49,16 @@ export async function searchMediaAll(query: string, page = 1) {
   };
 }
 
+export async function searchMulti(query: string, page = 1) {
+  const res = await fetch(
+    `${BASE_URL}/search/multi?api_key=${process.env.EXPO_PUBLIC_TMDB_API_KEY}&query=${encodeURIComponent(
+      query,
+    )}&page=${page}&include_adult=false`,
+  );
 
+  if (!res.ok) {
+    throw new Error("TMDB multi search failed");
+  }
+
+  return res.json();
+}
