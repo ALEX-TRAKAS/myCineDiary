@@ -154,6 +154,7 @@ export function MediaSearch({
                   cursor="pointer"
                   hoverStyle={{ backgroundColor: "$gray4" }}
                 >
+                  {item.media_type === "movie" ? "Movie" : "TV Show"} |{" "}
                   {item.title || item.name}
                 </Paragraph>
               </Pressable>
