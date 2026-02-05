@@ -1,5 +1,6 @@
+import { addUserMedia, removeUserMedia } from "@/src/api/userMedia";
 import { WebHeader } from "@/src/components/webHeader";
-import { ArrowBigLeft } from "@tamagui/lucide-icons";
+import { ArrowBigLeft, Bookmark } from "@tamagui/lucide-icons";
 import { Image } from "expo-image";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -16,10 +17,29 @@ export default function Details() {
   }>();
 
   const [item, setItem] = useState<any>(null);
+  const [bookmarked, setBookmarked] = useState(false);
+
+  const toggleBookmark = async () => {
+    try {
+      if (!bookmarked) {
+        await addUserMedia(type, {
+          tmdb_id: item.id,
+          title: item.title ?? item.name,
+          poster_path: item.poster_path,
+        });
+      } else {
+        await removeUserMedia(type, item.id);
+      }
+
+      setBookmarked((prev) => !prev);
+    } catch (err) {
+      console.error("Bookmark error:", err);
+    }
+  };
 
   useEffect(() => {
     fetch(
-      `https://api.themoviedb.org/3/${type}/${id}?api_key=${process.env.EXPO_PUBLIC_TMDB_API_KEY}&language=en-US`
+      `https://api.themoviedb.org/3/${type}/${id}?api_key=${process.env.EXPO_PUBLIC_TMDB_API_KEY}&language=en-US`,
     )
       .then((res) => res.json())
       .then(setItem);
@@ -71,6 +91,16 @@ export default function Details() {
                 }}
               />
               <Text>{item.overview}</Text>
+              <Button
+                scaleIcon={1.2}
+                animation="quick"
+                onPress={toggleBookmark}
+                icon={
+                  <Bookmark
+                    fill={bookmarked ? "currentColor" : "transparent"}
+                  />
+                }
+              />
             </YStack>
           </XStack>
         </XStack>
