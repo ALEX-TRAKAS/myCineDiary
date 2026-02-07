@@ -1,4 +1,5 @@
 import { addUserMedia, removeUserMedia } from "@/src/api/userMedia";
+import { AuthProvider } from "@/src/auth/AuthContext";
 import { WebHeader } from "@/src/components/webHeader";
 import { ArrowBigLeft, Bookmark } from "@tamagui/lucide-icons";
 import { Image } from "expo-image";
@@ -22,11 +23,7 @@ export default function Details() {
   const toggleBookmark = async () => {
     try {
       if (!bookmarked) {
-        await addUserMedia(type, {
-          tmdb_id: item.id,
-          title: item.title ?? item.name,
-          poster_path: item.poster_path,
-        });
+        await addUserMedia(type, item.id);
       } else {
         await removeUserMedia(type, item.id);
       }
@@ -49,96 +46,103 @@ export default function Details() {
   console.log(item);
   if (isWeb) {
     return (
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, backgroundColor: "$background" }}
-      >
-        <WebHeader />
-        <XStack
-          px="$6"
-          py="$20"
-          pt={insets.top}
-          bg="$background"
-          f={1}
-          minHeight="100vh"
-          $sm={{ flexDirection: "column" }}
+      <AuthProvider>
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            backgroundColor: "$background",
+          }}
         >
-          <Text fontSize="$8" fontWeight="700">
-            {item.title ?? item.name}
-          </Text>
+          <WebHeader />
           <XStack
-            ai="center"
-            gap="$6"
-            flexDirection="row"
+            px="$6"
+            py="$20"
+            pt={insets.top}
+            bg="$background"
+            f={1}
+            minHeight="100vh"
             $sm={{ flexDirection: "column" }}
           >
-            <YStack f={1} gap="$4" p="$4">
-              <Text fontSize="$8" fontWeight="700">
-                {item.genres?.length
-                  ? `Genres: ${item.genres
-                      .map((g: { name: any }) => g.name)
-                      .join(", ")}`
-                  : ""}
-              </Text>
-            </YStack>
-            <YStack f={1} gap="$4" p="$4">
-              <Image
-                source={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                style={{
-                  width: "100%",
-                  maxWidth: 300,
-                  height: 400,
-                  borderRadius: 16,
-                }}
-              />
-              <Text>{item.overview}</Text>
-              <Button
-                scaleIcon={1.2}
-                animation="quick"
-                onPress={toggleBookmark}
-                icon={
-                  <Bookmark
-                    fill={bookmarked ? "currentColor" : "transparent"}
-                  />
-                }
-              />
-            </YStack>
+            <Text fontSize="$8" fontWeight="700">
+              {item.title ?? item.name}
+            </Text>
+            <XStack
+              ai="center"
+              gap="$6"
+              flexDirection="row"
+              $sm={{ flexDirection: "column" }}
+            >
+              <YStack f={1} gap="$4" p="$4">
+                <Text fontSize="$8" fontWeight="700">
+                  {item.genres?.length
+                    ? `Genres: ${item.genres
+                        .map((g: { name: any }) => g.name)
+                        .join(", ")}`
+                    : ""}
+                </Text>
+              </YStack>
+              <YStack f={1} gap="$4" p="$4">
+                <Image
+                  source={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                  style={{
+                    width: "100%",
+                    maxWidth: 300,
+                    height: 400,
+                    borderRadius: 16,
+                  }}
+                />
+                <Text>{item.overview}</Text>
+                <Button
+                  scaleIcon={1.2}
+                  animation="quick"
+                  onPress={toggleBookmark}
+                  icon={
+                    <Bookmark
+                      fill={bookmarked ? "currentColor" : "transparent"}
+                    />
+                  }
+                />
+              </YStack>
+            </XStack>
           </XStack>
-        </XStack>
-      </ScrollView>
+        </ScrollView>
+      </AuthProvider>
     );
   }
   return (
-    <ScrollView>
-      <YStack f={1} gap="$4" p="$4" bg="$background">
-        <XStack
-          px="$4"
-          py="$3"
-          pt={insets.top + 12}
-          w="100%"
-          ai="center"
-          jc="space-between"
-          bc="$surface"
-        >
-          <XStack ai="center">
-            <Stack width={40} height={40}></Stack>
-            <YStack position="absolute" left={0}>
-              <Button
-                circular
-                backgroundColor="$surface"
-                icon={<ArrowBigLeft size={24} color={"#aaa"} />}
-              />
-            </YStack>
+    <AuthProvider>
+      <ScrollView>
+        <YStack f={1} gap="$4" p="$4" bg="$background">
+          <XStack
+            px="$4"
+            py="$3"
+            pt={insets.top + 12}
+            w="100%"
+            ai="center"
+            jc="space-between"
+            bc="$surface"
+          >
+            <XStack ai="center">
+              <Stack width={40} height={40}></Stack>
+              <YStack position="absolute" left={0}>
+                <Button
+                  circular
+                  backgroundColor="$surface"
+                  icon={<ArrowBigLeft size={24} color={"#aaa"} />}
+                />
+              </YStack>
+            </XStack>
           </XStack>
-        </XStack>
-        <Image
-          source={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-          style={{ width: "100%", height: 400, borderRadius: 16 }}
-        />
-        <Text fontSize="$8" fontWeight="700">
-          {item.title ?? item.name}
-        </Text>
-        <Text>{item.overview}</Text>
-      </YStack>
-    </ScrollView>
+          <Image
+            source={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+            style={{ width: "100%", height: 400, borderRadius: 16 }}
+          />
+          <Text fontSize="$8" fontWeight="700">
+            {item.title ?? item.name}
+          </Text>
+          <Text>{item.overview}</Text>
+        </YStack>
+      </ScrollView>
+    </AuthProvider>
   );
 }
