@@ -43,7 +43,6 @@ export default function Details() {
   }, [id, type]);
 
   if (!item) return null;
-  console.log(item);
   if (isWeb) {
     return (
       <AuthProvider>

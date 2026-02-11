@@ -28,7 +28,7 @@ export function WebHeader() {
           <>
             <Link href="/web/home">
               <Button size="$3" themeInverse={pathname === "/web/home"}>
-                Homes
+                Home
               </Button>
             </Link>
 
