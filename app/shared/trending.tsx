@@ -38,6 +38,7 @@ export default function TrendingScreen() {
   useEffect(() => {
     fetchData();
   }, []);
+
   if (isWeb) {
     return (
       <AuthProvider>

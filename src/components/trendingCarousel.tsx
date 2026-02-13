@@ -1,7 +1,9 @@
 import { TMDBMedia } from "@/types/tmdb";
 import { useRouter } from "expo-router";
-import { FlatList, Image } from "react-native";
-import { Button, Text, YStack } from "tamagui";
+import { useRef } from "react";
+import { Animated, FlatList, Platform } from "react-native";
+import { Button, YStack } from "tamagui";
+import { MovieShowCard } from "./movieShowCard";
 
 type Props = {
   data: TMDBMedia[];
@@ -9,29 +11,96 @@ type Props = {
 
 export function TrendingCarousel({ data }: Props) {
   const router = useRouter();
+  const flatListRef = useRef<FlatList>(null);
+
+  const ITEM_WIDTH = 140;
+  const SPACING = 12;
+
+  const scrollX = useRef(new Animated.Value(0)).current;
 
   return (
     <YStack>
-      <FlatList
+      <Animated.FlatList
+        ref={flatListRef}
         data={data}
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <YStack mr="$3" width={140}>
-            <Image
-              source={{
-                uri: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
-              }}
-              style={{ width: 140, height: 210, borderRadius: 12 }}
-            />
-            <Text numberOfLines={1} mt="$2">
-              {item.title}
-            </Text>
-          </YStack>
+        snapToInterval={ITEM_WIDTH + SPACING}
+        decelerationRate="fast"
+        contentContainerStyle={{ paddingHorizontal: 16 }}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+          { useNativeDriver: true },
         )}
-      />
+        scrollEventThrottle={16}
+        renderItem={({ item, index }) => {
+          const inputRange = [
+            (ITEM_WIDTH + SPACING) * (index - 1),
+            (ITEM_WIDTH + SPACING) * index,
+            (ITEM_WIDTH + SPACING) * (index + 1),
+          ];
+          const scale = scrollX.interpolate({
+            inputRange,
+            outputRange: [0.9, 1, 0.9],
+            extrapolate: "clamp",
+          });
 
+          return (
+            <Animated.View
+              style={{ transform: [{ scale }], marginRight: SPACING }}
+            >
+              <MovieShowCard
+                item={item}
+                onPress={() =>
+                  router.push({
+                    pathname: "/details/[id]",
+                    params: {
+                      id: item.id,
+                      type: item.media_type ?? (item.title ? "movie" : "tv"),
+                    },
+                  })
+                }
+              />
+            </Animated.View>
+          );
+        }}
+      />
+      {Platform.OS === "web" && (
+        <>
+          <Button
+            position="absolute"
+            left={0}
+            top="40%"
+            zIndex={10}
+            opacity={0.7}
+            onPress={() =>
+              flatListRef.current?.scrollToOffset({
+                offset: -(ITEM_WIDTH + SPACING) * 2,
+                animated: true,
+              })
+            }
+          >
+            ◀
+          </Button>
+
+          <Button
+            position="absolute"
+            right={0}
+            top="40%"
+            zIndex={10}
+            opacity={0.7}
+            onPress={() =>
+              flatListRef.current?.scrollToOffset({
+                offset: (ITEM_WIDTH + SPACING) * 2,
+                animated: true,
+              })
+            }
+          >
+            ▶
+          </Button>
+        </>
+      )}
       <Button
         mt="$3"
         alignSelf="flex-end"
