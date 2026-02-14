@@ -2,11 +2,19 @@ const BASE_URL = "https://api.themoviedb.org/3";
 
 export type MediaType = "movie" | "tv";
 
-export async function fetchTrending(type: MediaType = "movie", page = 1) {
+export async function fetchTrendingMovies(type: MediaType = "movie", page = 1) {
   const res = await fetch(
     `${BASE_URL}/trending/${type}/week?api_key=${process.env.EXPO_PUBLIC_TMDB_API_KEY}&page=${page}`,
   );
-  if (!res.ok) throw new Error("Failed to fetch trending");
+  if (!res.ok) throw new Error("Failed to fetch trending movies");
+  return res.json();
+}
+
+export async function fetchTrendingTv(type: MediaType = "tv", page = 1) {
+  const res = await fetch(
+    `${BASE_URL}/trending/${type}/week?api_key=${process.env.EXPO_PUBLIC_TMDB_API_KEY}&page=${page}`,
+  );
+  if (!res.ok) throw new Error("Failed to fetch trending TV shows");
   return res.json();
 }
 
