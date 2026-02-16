@@ -66,7 +66,7 @@ export default function Home() {
       </YStack>
       <YStack px="$3" w="100%" alignSelf="center" maxWidth={900}>
         {error && <Text color="red">{error}</Text>}
-        <TrendingCarousel data={moviesData} />
+        <TrendingCarousel data={moviesData} mediaType="movie" />
       </YStack>
       <Separator alignSelf="stretch" mx={16} borderColor="$gray8" />
       <YStack px="$4" pt="$4" pb="$3" ai="center">
@@ -77,7 +77,7 @@ export default function Home() {
       </YStack>
       <YStack px="$3" w="100%" alignSelf="center" maxWidth={900}>
         {error && <Text color="red">{error}</Text>}
-        <TrendingCarousel data={tvData} />
+        <TrendingCarousel data={tvData} mediaType="tv" />
       </YStack>
     </YStack>
   );

@@ -2,12 +2,14 @@ import { AuthProvider } from "@/src/auth/AuthContext";
 import { MovieShowsList } from "@/src/components/movieShowsList";
 import { WebHeader } from "@/src/components/webHeader";
 import { TMDBMedia } from "@/types/tmdb";
+import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Separator, Text, YStack } from "tamagui";
 
 export default function TrendingScreen() {
+  const { type } = useLocalSearchParams();
   const [data, setData] = useState<TMDBMedia[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -20,7 +22,7 @@ export default function TrendingScreen() {
     setLoading(true);
     try {
       const res = await fetch(
-        `https://api.themoviedb.org/3/trending/movie/week?api_key=${process.env.EXPO_PUBLIC_TMDB_API_KEY}&page=${page}`,
+        `https://api.themoviedb.org/3/trending/${type}/week?api_key=${process.env.EXPO_PUBLIC_TMDB_API_KEY}&page=${page}`,
       );
       const json = await res.json();
       if (!Array.isArray(json?.results)) {

@@ -7,9 +7,10 @@ import { MovieShowCard } from "./movieShowCard";
 
 type Props = {
   data: TMDBMedia[];
+  mediaType: "movie" | "tv";
 };
 
-export function TrendingCarousel({ data }: Props) {
+export function TrendingCarousel({ data, mediaType }: Props) {
   const router = useRouter();
   const flatListRef = useRef<FlatList>(null);
 
@@ -104,7 +105,12 @@ export function TrendingCarousel({ data }: Props) {
       <Button
         mt="$3"
         alignSelf="flex-end"
-        onPress={() => router.push("/shared/trending")}
+        onPress={() =>
+          router.push({
+            pathname: "/shared/trending",
+            params: { type: mediaType },
+          })
+        }
       >
         Show More
       </Button>
