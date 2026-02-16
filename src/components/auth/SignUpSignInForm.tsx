@@ -1,7 +1,7 @@
+import { loginUser, registerUser } from "@/src/api/auth";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button, Input, Paragraph, Separator, XStack, YStack } from "tamagui";
-
-import { loginUser, registerUser } from "@/src/api/auth";
 
 interface Props {
   type: "sign-up" | "sign-in";
@@ -23,6 +23,8 @@ export const SignUpSignInForm: React.FC<Props> = ({
   onSuccess,
   onSwitchMode,
 }) => {
+  const [authError, setAuthError] = useState<string | null>(null);
+
   const {
     control,
     handleSubmit,
@@ -40,6 +42,7 @@ export const SignUpSignInForm: React.FC<Props> = ({
 
   const onSubmit = async (data: SignData) => {
     try {
+      setAuthError(null);
       const response =
         type === "sign-up"
           ? await registerUser({
@@ -54,8 +57,9 @@ export const SignUpSignInForm: React.FC<Props> = ({
 
       console.log("Auth success:", response);
       onSuccess?.();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Auth error:", err);
+      setAuthError(err?.error || "Something went wrong");
     }
   };
 
@@ -77,7 +81,6 @@ export const SignUpSignInForm: React.FC<Props> = ({
 
       <Separator />
 
-      {/* Email */}
       <Controller
         control={control}
         name="email"
@@ -195,6 +198,19 @@ export const SignUpSignInForm: React.FC<Props> = ({
             </>
           )}
         />
+      )}
+      {authError && (
+        <YStack
+          backgroundColor="$red2"
+          borderColor="$red8"
+          borderWidth={1}
+          p="$3"
+          borderRadius="$4"
+        >
+          <Paragraph size="$3" color="$red10" fontWeight="600">
+            {authError}
+          </Paragraph>
+        </YStack>
       )}
 
       <Button
