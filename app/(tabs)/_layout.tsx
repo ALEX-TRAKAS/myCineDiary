@@ -1,5 +1,11 @@
 import { useAuth } from "@/src/auth/AuthContext";
-import { CircleUser, Home, Library, Search } from "@tamagui/lucide-icons";
+import {
+  CircleUser,
+  Home,
+  Library,
+  MessageSquare,
+  Search,
+} from "@tamagui/lucide-icons";
 import { Redirect, Tabs } from "expo-router";
 
 export default function TabsLayout() {
@@ -40,6 +46,13 @@ export default function TabsLayout() {
         options={{
           title: "Library",
           tabBarIcon: () => <Library color={"$primary"} />,
+        }}
+      />
+      <Tabs.Screen
+        name="threads"
+        options={{
+          title: "Threads",
+          tabBarIcon: () => <MessageSquare color={"$primary"} />,
         }}
       />
       <Tabs.Screen

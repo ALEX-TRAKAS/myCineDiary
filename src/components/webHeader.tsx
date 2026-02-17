@@ -38,6 +38,12 @@ export function WebHeader() {
               </Button>
             </Link>
 
+            <Link href="/web/threads">
+              <Button size="$3" themeInverse={pathname === "/web/threads"}>
+                Threads
+              </Button>
+            </Link>
+
             <Link href="/web/profile">
               <Button size="$3" themeInverse={pathname === "/web/profile"}>
                 Profile
