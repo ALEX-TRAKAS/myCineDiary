@@ -22,21 +22,23 @@ export default function Library() {
     try {
       setLoading(true);
 
-      const res = await getUserMediaByType(
+      const json = await getUserMediaByType(
         activeFilter === "movies" ? "movie" : "tv",
         pageToFetch,
         20,
       );
 
-      const json = await res.json();
+      if (!json || !json.movies || json.movies.length === 0) {
+        setHasMore(false);
+        return;
+      }
 
       setData((prev) => (reset ? json.movies : [...prev, ...json.movies]));
 
+      setPage(pageToFetch);
+
       if (json.currentPage >= json.totalPages) {
         setHasMore(false);
-      } else {
-        setHasMore(true);
-        setPage(pageToFetch);
       }
     } catch (err) {
       console.error(err);
@@ -81,12 +83,14 @@ export default function Library() {
             Your Watchlist
           </Paragraph>
 
-          <MovieShowsList
-            data={data}
-            loading={loading}
-            loadMore={loadMore}
-            layout="vertical"
-          />
+          <YStack flex={1}>
+            <MovieShowsList
+              data={data}
+              loading={loading}
+              loadMore={loadMore}
+              layout="vertical"
+            />
+          </YStack>
         </YStack>
       </XStack>
     </ProtectedRoute>

@@ -40,7 +40,7 @@ export function MovieShowsList({
       }}
       columnWrapperStyle={!isHorizontal ? { gap: contentGap } : undefined}
       onEndReached={!isHorizontal ? loadMore : undefined}
-      onEndReachedThreshold={0.6}
+      onEndReachedThreshold={0.2}
       ListFooterComponent={loading ? <SkeletonCard /> : null}
       renderItem={({ item }: { item: TMDBMedia }) => (
         <MovieShowCard
