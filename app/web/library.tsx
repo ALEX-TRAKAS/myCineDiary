@@ -1,13 +1,13 @@
 import { getUserMediaByType } from "@/src/api/userMedia";
 import { ProtectedRoute } from "@/src/components/auth/protectedRoute";
-import { MovieShowsList } from "@/src/components/movieShowsList";
-import { TMDBMedia } from "@/types/tmdb";
+import { LibraryList } from "@/src/components/libraryList";
+import { MCDMedia } from "@/types/myCineDiaryMedia";
 import { useEffect, useState } from "react";
 import { Button, Paragraph, XStack, YStack } from "tamagui";
 
 export default function Library() {
   const [activeFilter, setActiveFilter] = useState("all");
-  const [data, setData] = useState<TMDBMedia[]>([]);
+  const [data, setData] = useState<MCDMedia[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -27,19 +27,13 @@ export default function Library() {
         pageToFetch,
         20,
       );
-
-      if (!json || !json.movies || json.movies.length === 0) {
+      if (!json || json.length === 0) {
         setHasMore(false);
         return;
       }
-
-      setData((prev) => (reset ? json.movies : [...prev, ...json.movies]));
+      setData((prev) => (reset ? json : [...prev, ...json]));
 
       setPage(pageToFetch);
-
-      if (json.currentPage >= json.totalPages) {
-        setHasMore(false);
-      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -84,7 +78,7 @@ export default function Library() {
           </Paragraph>
 
           <YStack flex={1}>
-            <MovieShowsList
+            <LibraryList
               data={data}
               loading={loading}
               loadMore={loadMore}

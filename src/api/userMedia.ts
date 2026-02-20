@@ -2,7 +2,13 @@ import { authFetch } from "@/src/lib/authFetch";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:8080/api";
 
-export async function addUserMedia(type: "movie" | "tv", tmdbId: number) {
+export async function addUserMedia(
+  type: "movie" | "tv",
+  tmdbId: number,
+  posterPath: string,
+  title: string,
+  mediaType: string,
+) {
   if (type === "movie") {
     const res = await authFetch(`${API_URL}/user/movies`, {
       method: "POST",
@@ -11,6 +17,9 @@ export async function addUserMedia(type: "movie" | "tv", tmdbId: number) {
       },
       body: JSON.stringify({
         tmdb_movie_id: tmdbId,
+        poster_path: posterPath,
+        title: title,
+        media_type: mediaType,
       }),
     });
     if (!res.ok) throw await res.json();
@@ -23,6 +32,9 @@ export async function addUserMedia(type: "movie" | "tv", tmdbId: number) {
       },
       body: JSON.stringify({
         tmdb_series_id: tmdbId,
+        poster_path: posterPath,
+        title: title,
+        media_type: mediaType,
       }),
     });
     if (!res.ok) throw await res.json();

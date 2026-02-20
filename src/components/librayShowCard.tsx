@@ -1,23 +1,23 @@
-import { TMDBMedia } from "@/types/tmdb";
+import { MCDMedia } from "@/types/myCineDiaryMedia";
 import { Image } from "expo-image";
 import { Pressable } from "react-native";
 import { Text, YStack } from "tamagui";
 
 type Props = {
-  item: TMDBMedia;
+  item: MCDMedia;
   onPress?: () => void;
 };
 
-export function MovieShowCard({ item, onPress }: Props) {
-  const title = item.title ?? item.name ?? "Untitled";
+export function LibraryShowCard({ item, onPress }: Props) {
+  const title = item.Title ?? "Untitled";
 
   return (
     <Pressable onPress={onPress}>
       <YStack width={140} gap="$2">
         <Image
           source={
-            item.poster_path
-              ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+            item.PosterPath
+              ? `https://image.tmdb.org/t/p/w500${item.PosterPath}`
               : undefined
           }
           style={{
