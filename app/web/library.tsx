@@ -19,6 +19,9 @@ export default function Library() {
   }, [activeFilter]);
 
   const fetchLibrary = async (pageToFetch: number, reset = false) => {
+    if (reset) {
+      setData([]);
+    }
     try {
       setLoading(true);
 
