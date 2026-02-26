@@ -1,7 +1,7 @@
 import { MCDMedia } from "@/types/myCineDiaryMedia";
 import { useRouter } from "expo-router";
 import { FlatList, Platform } from "react-native";
-import { LibraryShowCard } from "./librayShowCard";
+import { LibraryShowCard } from "./libraryShowCard";
 import { SkeletonCard } from "./skeletonCard";
 
 type Props = {

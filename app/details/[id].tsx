@@ -23,15 +23,18 @@ export default function Details() {
   const toggleBookmark = async () => {
     try {
       if (!bookmarked) {
-        await addUserMedia(
-          type,
-          item.id as number,
-          item.poster_path,
-          item.title ?? item.name,
-          item.media_type,
-        );
+        await addUserMedia({
+          tmdbId: item.id,
+          mediaType: type,
+          title: item.title ?? item.name,
+          posterPath: item.poster_path,
+          backdropPath: item.backdrop_path,
+          overview: item.overview,
+          releaseDate:
+            type === "movie" ? item.release_date : item.first_air_date,
+        });
       } else {
-        await removeUserMedia(type, item.id);
+        await removeUserMedia(item.id as number, type);
       }
 
       setBookmarked((prev) => !prev);

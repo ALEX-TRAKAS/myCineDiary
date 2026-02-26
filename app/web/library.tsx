@@ -1,4 +1,4 @@
-import { getUserMediaByType } from "@/src/api/userMedia";
+import { getUserMedia } from "@/src/api/userMedia";
 import { ProtectedRoute } from "@/src/components/auth/protectedRoute";
 import { LibraryList } from "@/src/components/libraryList";
 import { MCDMedia } from "@/types/myCineDiaryMedia";
@@ -21,24 +21,38 @@ export default function Library() {
   const fetchLibrary = async (pageToFetch: number, reset = false) => {
     if (reset) {
       setData([]);
+      setHasMore(true);
     }
+
     try {
       setLoading(true);
 
-      const json = await getUserMediaByType(
-        activeFilter === "movies" ? "movie" : "tv",
-        pageToFetch,
-        20,
-      );
-      if (!json || json.length === 0) {
+      const json = await getUserMedia({
+        mediaType:
+          activeFilter === "all"
+            ? undefined
+            : activeFilter === "series"
+              ? "tv"
+              : "movie",
+        page: pageToFetch,
+        limit: 20,
+      });
+
+      const items: MCDMedia[] = json.items ?? [];
+
+      if (items.length === 0) {
         setHasMore(false);
         return;
       }
-      setData((prev) => (reset ? json : [...prev, ...json]));
 
+      setData((prev) => (reset ? items : [...prev, ...items]));
       setPage(pageToFetch);
+
+      if (json.current_page >= json.total_pages) {
+        setHasMore(false);
+      }
     } catch (err) {
-      console.error(err);
+      console.error("Fetch library error:", err);
     } finally {
       setLoading(false);
     }
@@ -46,9 +60,6 @@ export default function Library() {
 
   const loadMore = () => {
     if (loading || !hasMore) return;
-
-    setLoading(true);
-
     fetchLibrary(page + 1);
   };
 

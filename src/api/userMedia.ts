@@ -3,67 +3,76 @@ import { authFetch } from "@/src/lib/authFetch";
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:8080/api";
 
 export async function addUserMedia(
-  type: "movie" | "tv",
-  tmdbId: number,
-  posterPath: string,
-  title: string,
-  mediaType: string,
+  media: {
+    tmdbId: number;
+    mediaType: "movie" | "tv";
+    title: string;
+    posterPath: string;
+    backdropPath?: string;
+    overview?: string;
+    releaseDate?: string;
+  },
+  options?: {
+    status?: "watchlist" | "in_progress" | "completed";
+    isFavorite?: boolean;
+    notes?: string;
+  },
 ) {
-  if (type === "movie") {
-    const res = await authFetch(`${API_URL}/user/movies`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        tmdb_movie_id: tmdbId,
-        poster_path: posterPath,
-        title: title,
-        media_type: mediaType,
-      }),
-    });
-    if (!res.ok) throw await res.json();
-    return res.json();
-  } else {
-    const res = await authFetch(`${API_URL}/user/series`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        tmdb_series_id: tmdbId,
-        poster_path: posterPath,
-        title: title,
-        media_type: mediaType,
-      }),
-    });
-    if (!res.ok) throw await res.json();
-    return res.json();
-  }
+  const res = await authFetch(`${API_URL}/user/media`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      tmdb_id: media.tmdbId,
+      media_type: media.mediaType,
+      title: media.title,
+      poster_path: media.posterPath,
+      backdrop_path: media.backdropPath ?? "",
+      overview: media.overview ?? "",
+      release_date: new Date(media.releaseDate ?? "").toISOString() ?? null,
+
+      status: options?.status ?? "watchlist",
+      is_favorite: options?.isFavorite ?? false,
+      notes: options?.notes ?? "",
+    }),
+  });
+
+  if (!res.ok) throw await res.json();
+  return res.json();
 }
 
-export async function removeUserMedia(type: "movie" | "tv", tmdbId: number) {
-  const endpoint = type === "movie" ? "movies" : "series";
-
-  const res = await authFetch(`${API_URL}/user/${endpoint}/${tmdbId}`, {
-    method: "DELETE",
-  });
+export async function removeUserMedia(
+  tmdbId: number,
+  mediaType: "movie" | "tv",
+) {
+  const res = await authFetch(
+    `${API_URL}/user/media/${tmdbId}?media_type=${mediaType}`,
+    {
+      method: "DELETE",
+    },
+  );
 
   if (!res.ok) throw await res.json();
 }
 
-export async function getUserMediaByType(
-  type: "movie" | "tv",
-  page = 1,
-  limit = 20,
-) {
-  const endpoint = type === "movie" ? "movies" : "series";
-  const res = await authFetch(
-    `${API_URL}/user/${endpoint}?page=${page}&limit=${limit}`,
-    {
-      method: "GET",
-    },
-  );
+export async function getUserMedia(options?: {
+  mediaType?: "movie" | "tv";
+  page?: number;
+  limit?: number;
+}) {
+  const page = options?.page ?? 1;
+  const limit = options?.limit ?? 20;
+
+  let url = `${API_URL}/user/media?page=${page}&limit=${limit}`;
+
+  if (options?.mediaType) {
+    url += `&media_type=${options.mediaType}`;
+  }
+
+  const res = await authFetch(url, {
+    method: "GET",
+  });
 
   if (!res.ok) throw await res.json();
   return res.json();

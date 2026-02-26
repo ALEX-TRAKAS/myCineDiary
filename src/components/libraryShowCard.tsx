@@ -9,15 +9,15 @@ type Props = {
 };
 
 export function LibraryShowCard({ item, onPress }: Props) {
-  const title = item.Title ?? "Untitled";
+  const title = item.title ?? "Untitled";
 
   return (
     <Pressable onPress={onPress}>
       <YStack width={140} gap="$2">
         <Image
           source={
-            item.PosterPath
-              ? `https://image.tmdb.org/t/p/w500${item.PosterPath}`
+            item.poster_path
+              ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
               : undefined
           }
           style={{
