@@ -29,7 +29,7 @@ export function LibraryList({
       data={data}
       key={layout + (isWeb ? "-web" : "-native")}
       keyExtractor={(item, index) =>
-        `${item.TMDBMovieID}-${item.media_type}-${index}`
+        `${item.tmdb_id}-${item.media_type}-${index}`
       }
       horizontal={isHorizontal}
       numColumns={numColumns}
@@ -51,7 +51,7 @@ export function LibraryList({
             router.push({
               pathname: "/details/[id]",
               params: {
-                id: String(item.TMDBMovieID),
+                id: String(item.tmdb_id),
                 type: item.media_type,
               },
             });
