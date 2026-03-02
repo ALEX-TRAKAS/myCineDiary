@@ -184,7 +184,7 @@ export default function Details() {
                   </Text>
                   <Button
                     size="$4"
-                    theme={bookmarked ? "active" : undefined}
+                    backgroundColor={bookmarked ? "$primary" : undefined}
                     onPress={toggleBookmark}
                     icon={
                       <Bookmark
