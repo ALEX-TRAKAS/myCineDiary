@@ -77,3 +77,17 @@ export async function getUserMedia(options?: {
   if (!res.ok) throw await res.json();
   return res.json();
 }
+
+export async function getUserMediaByTMDBID(
+  tmdbId: any,
+  mediaType?: "movie" | "tv",
+) {
+  let url = `${API_URL}/user/media/${tmdbId}?media_type=${mediaType ?? ""}`;
+
+  const res = await authFetch(url, {
+    method: "GET",
+  });
+
+  if (!res.ok) throw await res.json();
+  return res.json();
+}
