@@ -5,8 +5,8 @@ import {
   removeUserMedia,
 } from "@/src/api/userMedia";
 import { AuthProvider } from "@/src/auth/AuthContext";
+import ReviewModal from "@/src/components/reviewModal";
 import SpoilerText from "@/src/components/spoilerText";
-import StarRating from "@/src/components/starRating";
 import { WebHeader } from "@/src/components/webHeader";
 import { ArrowBigLeft, Bookmark, Pen } from "@tamagui/lucide-icons";
 import { Image } from "expo-image";
@@ -14,7 +14,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Platform, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Button, Dialog, Stack, Text, TextArea, XStack, YStack } from "tamagui";
+import { Button, Stack, Text, XStack, YStack } from "tamagui";
 
 export default function Details() {
   const [reviews, setReviews] = useState<any[]>([]);
@@ -22,9 +22,6 @@ export default function Details() {
   const [totalPages, setTotalPages] = useState(1);
   const [loadingReviews, setLoadingReviews] = useState(false);
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
-  const [reviewText, setReviewText] = useState("");
-  const [rating, setRating] = useState(0);
-  const [isSpoiler, setIsSpoiler] = useState(false);
   const [item, setItem] = useState<any>(null);
   const [bookmarked, setBookmarked] = useState(false);
   const insets = useSafeAreaInsets();
@@ -107,26 +104,6 @@ export default function Details() {
       setLoadingReviews(false);
     }
   };
-  const handleSubmitReview = async () => {
-    try {
-      await createReview({
-        tmdbId: Number(id),
-        mediaType: type,
-        rating,
-        reviewText,
-        isSpoiler,
-      });
-
-      setReviewModalOpen(false);
-      setReviewText("");
-      setRating(0);
-      setIsSpoiler(false);
-
-      loadReviews(1);
-    } catch (err) {
-      console.error("Submit review error:", err);
-    }
-  };
   if (!item) return null;
   if (isWeb) {
     return (
@@ -196,7 +173,8 @@ export default function Details() {
                   </Button>
 
                   <Button
-                    icon={<Pen onPress={() => setReviewModalOpen(true)} />}
+                    onPress={() => setReviewModalOpen(true)}
+                    icon={<Pen />}
                   >
                     Write Review
                   </Button>
@@ -247,30 +225,25 @@ export default function Details() {
             </XStack>
           </XStack>
         </ScrollView>
-        <Dialog open={reviewModalOpen} onOpenChange={setReviewModalOpen}>
-          <Dialog.Portal>
-            <Dialog.Overlay />
-            <Dialog.Content p="$6" gap="$4">
-              <Text fontSize="$7" fontWeight="700">
-                Write a Review
-              </Text>
+        <ReviewModal
+          open={reviewModalOpen}
+          onOpenChange={setReviewModalOpen}
+          onSubmit={async ({ rating, reviewText, isSpoiler }) => {
+            try {
+              await createReview({
+                tmdbId: Number(id),
+                mediaType: type,
+                rating,
+                reviewText,
+                isSpoiler,
+              });
 
-              <StarRating rating={rating} setRating={setRating} />
-
-              <TextArea
-                placeholder="Share your thoughts..."
-                value={reviewText}
-                onChangeText={setReviewText}
-              />
-
-              <XStack ai="center" gap="$3">
-                <Text>Contains spoilers</Text>
-              </XStack>
-
-              <Button onPress={handleSubmitReview}>Submit</Button>
-            </Dialog.Content>
-          </Dialog.Portal>
-        </Dialog>
+              loadReviews(1);
+            } catch (err) {
+              console.error("Submit review error:", err);
+            }
+          }}
+        />
       </AuthProvider>
     );
   }
