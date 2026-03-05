@@ -45,9 +45,14 @@ export default function Details() {
     }
   };
 
-  isbookmarked().then((isBookmarked) => {
-    setBookmarked(isBookmarked);
-  });
+  useEffect(() => {
+    const checkBookmark = async () => {
+      const result = await isbookmarked();
+      setBookmarked(result);
+    };
+
+    checkBookmark();
+  }, [id, type]);
 
   const toggleBookmark = async () => {
     try {
@@ -90,16 +95,22 @@ export default function Details() {
 
       const data = await getPublicReviews(Number(id), type, pageNumber, 12);
 
+      if (!data || !data.reviews) {
+        console.error("Invalid reviews response:", data);
+        return;
+      }
+
       if (pageNumber === 1) {
         setReviews(data.reviews);
       } else {
         setReviews((prev) => [...prev, ...data.reviews]);
       }
 
-      setTotalPages(data.total_pages);
+      setTotalPages(data.total_pages ?? 1);
       setPage(pageNumber);
     } catch (err) {
       console.error("Review fetch error:", err);
+      setReviews([]);
     } finally {
       setLoadingReviews(false);
     }
@@ -193,26 +204,33 @@ export default function Details() {
                     Reviews
                   </Text>
                 </YStack>
-                {reviews.map((review) => (
-                  <YStack
-                    key={review.id}
-                    p="$4"
-                    borderRadius="$4"
-                    backgroundColor="$surface"
-                    gap="$2"
-                  >
-                    <XStack jc="space-between">
-                      <Text fontWeight="600">{review.user_name}</Text>
-                      <Text>⭐ {review.rating}/10</Text>
-                    </XStack>
+                {Array.isArray(reviews) &&
+                  reviews.length === 0 &&
+                  !loadingReviews && (
+                    <Text color="$gray10">No reviews yet.</Text>
+                  )}
 
-                    {review.is_spoiler ? (
-                      <SpoilerText text={review.review_text} />
-                    ) : (
-                      <Text>{review.review_text}</Text>
-                    )}
-                  </YStack>
-                ))}
+                {Array.isArray(reviews) &&
+                  reviews.map((review) => (
+                    <YStack
+                      key={review.id}
+                      p="$4"
+                      borderRadius="$4"
+                      backgroundColor="$surface"
+                      gap="$2"
+                    >
+                      <XStack jc="space-between">
+                        <Text fontWeight="600">{review.user_name}</Text>
+                        <Text>⭐ {review.rating}/10</Text>
+                      </XStack>
+
+                      {review.is_spoiler ? (
+                        <SpoilerText text={review.review_text} />
+                      ) : (
+                        <Text color="$white">{review.review_text}</Text>
+                      )}
+                    </YStack>
+                  ))}
                 {page < totalPages && (
                   <Button
                     onPress={() => loadReviews(page + 1)}
