@@ -1,17 +1,25 @@
 import { useState } from "react";
-import { Text } from "react-native";
+import { Pressable, Text } from "react-native";
 
-export default function SpoilerText(text: any) {
+export default function SpoilerText({ text }: { text: string }) {
   const [revealed, setRevealed] = useState(false);
 
   return (
-    <Text
-      onPress={() => setRevealed(true)}
-      style={{
-        filter: revealed ? "none" : "blur(6px)",
-      }}
-    >
-      {text}
-    </Text>
+    <Pressable onPress={() => setRevealed(true)}>
+      <Text
+        style={{
+          ...(revealed
+            ? {}
+            : {
+                color: "transparent",
+                textShadowColor: "rgb(255, 255, 255)",
+                textShadowOffset: { width: 0, height: 0 },
+                textShadowRadius: 6,
+              }),
+        }}
+      >
+        {text}
+      </Text>
+    </Pressable>
   );
 }
