@@ -10,7 +10,7 @@ export interface CreateReviewPayload {
 
 export async function createReview(data: CreateReviewPayload) {
   const response = await authFetch(
-    `${process.env.EXPO_PUBLIC_API_URL}/reviews`,
+    `${process.env.EXPO_PUBLIC_API_URL}/user/reviews`,
     {
       method: "POST",
       headers: {
@@ -41,7 +41,7 @@ export async function getPublicReviews(
   limit = 12,
 ) {
   const response = await authFetch(
-    `${process.env.EXPO_PUBLIC_API_URL}/reviews?tmdb_id=${tmdbId}&media_type=${mediaType}&page=${page}&limit=${limit}`,
+    `${process.env.EXPO_PUBLIC_API_URL}/media/${tmdbId}/reviews?media_type=${mediaType}&page=${page}&limit=${limit}`,
   );
 
   if (!response.ok) {
