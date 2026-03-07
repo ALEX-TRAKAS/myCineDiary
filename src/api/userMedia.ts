@@ -11,6 +11,7 @@ export async function addUserMedia(
     backdropPath?: string;
     overview?: string;
     releaseDate?: string;
+    genres?: { id: number; name: string }[];
   },
   options?: {
     status?: "watchlist" | "in_progress" | "completed";
@@ -30,8 +31,10 @@ export async function addUserMedia(
       poster_path: media.posterPath,
       backdrop_path: media.backdropPath ?? "",
       overview: media.overview ?? "",
-      release_date: new Date(media.releaseDate ?? "").toISOString() ?? null,
-
+      release_date: media.releaseDate
+        ? new Date(media.releaseDate).toISOString()
+        : null,
+      genres: media.genres ?? [],
       status: options?.status ?? "watchlist",
       is_favorite: options?.isFavorite ?? false,
       notes: options?.notes ?? "",
