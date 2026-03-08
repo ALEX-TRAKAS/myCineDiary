@@ -1,4 +1,6 @@
+import { getMediaDataByID } from "@/src/api/media";
 import { createReview, getPublicReviews } from "@/src/api/reviews";
+import { fetchMediaByID } from "@/src/api/tmbdApi";
 import {
   addUserMedia,
   getUserMediaByTMDBID,
@@ -8,13 +10,14 @@ import { AuthProvider } from "@/src/auth/AuthContext";
 import ReviewModal from "@/src/components/reviewModal";
 import SpoilerText from "@/src/components/spoilerText";
 import { WebHeader } from "@/src/components/webHeader";
+import { isLoggedIn } from "@/src/lib/tokenStorage";
 import { ArrowBigLeft, Bookmark, Pen } from "@tamagui/lucide-icons";
 import { Image } from "expo-image";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Platform, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Button, Stack, Text, XStack, YStack } from "tamagui";
+import { Button, Spinner, Stack, Text, XStack, YStack } from "tamagui";
 
 export default function Details() {
   const [reviews, setReviews] = useState<any[]>([]);
@@ -31,44 +34,37 @@ export default function Details() {
     type: "movie" | "tv";
   }>();
 
-  const isbookmarked = async () => {
+  const checkBookmark = async () => {
     try {
       const data = await getUserMediaByTMDBID(Number(id), type);
-      if (data) {
-        return true;
-      } else {
-        return false;
-      }
+      setBookmarked(!!data);
     } catch (err) {
       console.error("Bookmark check error:", err);
-      return false;
+      setBookmarked(false);
     }
   };
 
-  useEffect(() => {
-    const checkBookmark = async () => {
-      const result = await isbookmarked();
-      setBookmarked(result);
-    };
-
-    checkBookmark();
-  }, [id, type]);
-
   const toggleBookmark = async () => {
     try {
-      if (!bookmarked) {
-        await addUserMedia({
-          tmdbId: item.id,
-          mediaType: type,
-          title: item.title ?? item.name,
-          posterPath: item.poster_path,
-          backdropPath: item.backdrop_path,
-          overview: item.overview,
-          releaseDate:
-            type === "movie" ? item.release_date : item.first_air_date,
-        });
+      if (bookmarked) {
+        await removeUserMedia(item.id, type);
       } else {
-        await removeUserMedia(item.id as number, type);
+        await addUserMedia(
+          {
+            tmdbId: item.id,
+            mediaType: type,
+            title: item.title ?? item.name ?? "Unknown Title",
+            posterPath: item.poster_path ?? "",
+            backdropPath: item.backdrop_path ?? "",
+            overview: item.overview ?? "",
+            releaseDate: item.release_date ?? item.first_air_date,
+            genres: item.genres ?? [],
+          },
+          {
+            status: "watchlist",
+            isFavorite: true,
+          },
+        );
       }
 
       setBookmarked((prev) => !prev);
@@ -77,17 +73,21 @@ export default function Details() {
     }
   };
 
-  useEffect(() => {
-    fetch(
-      `https://api.themoviedb.org/3/${type}/${id}?api_key=${process.env.EXPO_PUBLIC_TMDB_API_KEY}&language=en-US`,
-    )
-      .then((res) => res.json())
-      .then(setItem);
-  }, [id, type]);
+  const loadMedia = async () => {
+    try {
+      const data = await getMediaDataByID(id, type);
 
-  useEffect(() => {
-    loadReviews(1);
-  }, [id, type]);
+      if (data) {
+        setItem(data);
+        return;
+      }
+
+      const tmdb = await fetchMediaByID(id, type);
+      setItem(tmdb);
+    } catch (err) {
+      console.error("Media load error:", err);
+    }
+  };
 
   const loadReviews = async (pageNumber: number) => {
     try {
@@ -95,16 +95,14 @@ export default function Details() {
 
       const data = await getPublicReviews(Number(id), type, pageNumber, 12);
 
-      if (!data || !data.reviews) {
+      if (!data?.reviews) {
         console.error("Invalid reviews response:", data);
         return;
       }
 
-      if (pageNumber === 1) {
-        setReviews(data.reviews);
-      } else {
-        setReviews((prev) => [...prev, ...data.reviews]);
-      }
+      setReviews((prev) =>
+        pageNumber === 1 ? data.reviews : [...prev, ...data.reviews],
+      );
 
       setTotalPages(data.total_pages ?? 1);
       setPage(pageNumber);
@@ -115,7 +113,26 @@ export default function Details() {
       setLoadingReviews(false);
     }
   };
-  if (!item) return null;
+
+  useEffect(() => {
+    const init = async () => {
+      loadMedia();
+      loadReviews(1);
+
+      if (await isLoggedIn()) {
+        checkBookmark();
+      }
+    };
+
+    init();
+  }, [id, type]);
+  if (!item) {
+    return (
+      <YStack f={1} ai="center" jc="center" bg="$background">
+        <Spinner size="large" color="$primary" />
+      </YStack>
+    );
+  }
   if (isWeb) {
     return (
       <AuthProvider>
@@ -166,10 +183,16 @@ export default function Details() {
                         .join(" • ")}
                     </Text>
                   )}
-                  <Text fontSize="$5" opacity={0.8}>
-                    ⭐ {item.average_rating?.toFixed(1) ?? 0}(
-                    {item.reviews_count ?? 0} reviews)
-                  </Text>
+                  {Array.isArray(reviews) &&
+                    reviews.map((review) => (
+                      <>
+                        <Text fontSize="$5" opacity={0.8}>
+                          ⭐ {item.average_rating?.toFixed(1) ?? 0}(
+                          {item.reviews_count ?? 0} reviews)
+                        </Text>
+                      </>
+                    ))}
+
                   <Button
                     size="$4"
                     backgroundColor={bookmarked ? "$primary" : undefined}
@@ -182,7 +205,6 @@ export default function Details() {
                   >
                     {bookmarked ? "Bookmarked" : "Add to Bookmark"}
                   </Button>
-
                   <Button
                     onPress={() => setReviewModalOpen(true)}
                     icon={<Pen />}
