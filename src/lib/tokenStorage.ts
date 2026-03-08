@@ -37,3 +37,8 @@ export async function clearTokens() {
     await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
   }
 }
+
+export async function isLoggedIn() {
+  const token = await getAccessToken();
+  return !!token;
+}
