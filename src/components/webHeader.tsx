@@ -32,6 +32,11 @@ export function WebHeader() {
               </Button>
             </Link>
 
+            <Link href="/web/calendar">
+              <Button size="$3" themeInverse={pathname === "/web/calendar"}>
+                Calendar
+              </Button>
+            </Link>
             <Link href="/web/library">
               <Button size="$3" themeInverse={pathname === "/web/library"}>
                 Library
