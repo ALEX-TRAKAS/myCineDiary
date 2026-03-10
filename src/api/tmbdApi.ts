@@ -78,3 +78,30 @@ export async function searchMulti(query: string, page = 1) {
 
   return res.json();
 }
+
+export async function getAiringToday() {
+  const res = await fetch(
+    `${BASE_URL}/tv/airing_today?api_key=${process.env.EXPO_PUBLIC_TMDB_API_KEY}`,
+  );
+
+  const data = await res.json();
+
+  return data.results.map((show: any) => ({
+    id: show.id,
+    name: show.name,
+    airDate: show.first_air_date,
+    poster: show.poster_path,
+  }));
+}
+
+export async function fetchNextEpisode(tvId: number) {
+  const res = await fetch(
+    `${BASE_URL}/tv/${tvId}?api_key=${process.env.EXPO_PUBLIC_TMDB_API_KEY}`,
+  );
+
+  if (!res.ok) throw new Error("Failed to fetch TV details");
+
+  const data = await res.json();
+
+  return data.next_episode_to_air;
+}
