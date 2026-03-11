@@ -1,16 +1,52 @@
+import { fetchNextEpisode, fetchTrendingTv } from "@/src/api/tmbdApi";
 import { AuthProvider } from "@/src/auth/AuthContext";
 import { ProtectedRoute } from "@/src/components/auth/protectedRoute";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
 import { Text, YStack } from "tamagui";
 
 export default function CalendarPage() {
   const [selectedDate, setSelectedDate] = useState("");
+  const [episodesByDate, setEpisodesByDate] = useState<Record<string, any[]>>(
+    {},
+  );
 
-  const episodesByDate: Record<string, any[]> = {
-    "2026-03-09": [],
-    "2026-03-10": [],
-  };
+  useEffect(() => {
+    async function loadCalendar() {
+      try {
+        const trending = await fetchTrendingTv("tv");
+
+        const grouped: Record<string, any[]> = {};
+
+        await Promise.all(
+          trending.results.slice(0, 20).map(async (show: any) => {
+            const episode = await fetchNextEpisode(show.id);
+
+            if (!episode || !episode.air_date) return;
+
+            const date = episode.air_date;
+
+            if (!grouped[date]) {
+              grouped[date] = [];
+            }
+
+            grouped[date].push({
+              show: show.name,
+              season: episode.season_number,
+              episode: episode.episode_number,
+              title: episode.name,
+            });
+          }),
+        );
+
+        setEpisodesByDate(grouped);
+      } catch (err) {
+        console.error("Calendar error:", err);
+      }
+    }
+
+    loadCalendar();
+  }, []);
 
   const selectedEpisodes = episodesByDate[selectedDate] || [];
 
@@ -19,7 +55,7 @@ export default function CalendarPage() {
       <AuthProvider>
         <YStack flex={1} background="$background" padding="$4" gap="$4">
           <Text fontSize="$8" fontWeight="700">
-            Release Calendar
+            Episode Calendar
           </Text>
 
           <Calendar
@@ -39,29 +75,21 @@ export default function CalendarPage() {
             theme={{
               backgroundColor: "$background",
               calendarBackground: "$background",
-
               dayTextColor: "#fff",
               monthTextColor: "#fff",
-
-              textDisabledColor: "#555",
               arrowColor: "#6c5ce7",
-
               todayTextColor: "#6c5ce7",
-
               dotColor: "#6c5ce7",
-              selectedDotColor: "#ffffff",
-
-              textDayFontWeight: "500",
-              textMonthFontWeight: "700",
             }}
           />
+
           <YStack gap="$2">
             <Text fontSize="$6" fontWeight="600">
               Episodes on {selectedDate || "Select a day"}
             </Text>
 
             {selectedEpisodes.length === 0 && (
-              <Text opacity={0.6}>No releases</Text>
+              <Text opacity={0.6}>No episodes</Text>
             )}
 
             {selectedEpisodes.map((ep, i) => (
@@ -71,8 +99,11 @@ export default function CalendarPage() {
                 borderRadius="$4"
                 background="$backgroundStrong"
               >
-                <Text fontWeight="600">{ep.show}</Text>
-                <Text opacity={0.7}>{ep.episode}</Text>
+                <Text fontWeight="700">{ep.show}</Text>
+
+                <Text opacity={0.8}>
+                  S{ep.season}E{ep.episode} — {ep.title}
+                </Text>
               </YStack>
             ))}
           </YStack>
