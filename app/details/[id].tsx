@@ -47,7 +47,8 @@ export default function Details() {
   const toggleBookmark = async () => {
     try {
       if (bookmarked) {
-        await removeUserMedia(item.id, type);
+        const finalId = item.id === 0 ? Number(id) : item.id;
+        await removeUserMedia(finalId, type);
       } else {
         await addUserMedia(
           {
