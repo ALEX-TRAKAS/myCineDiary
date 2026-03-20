@@ -2,7 +2,7 @@ import { authFetch } from "@/src/lib/authFetch";
 
 export async function getUserActivity() {
   const response = await authFetch(
-    `${process.env.EXPO_PUBLIC_API_URL}/users/me/activity`,
+    `${process.env.EXPO_PUBLIC_API_URL}/user/activity`,
   );
 
   if (!response.ok) {
